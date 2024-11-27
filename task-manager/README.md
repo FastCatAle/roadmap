@@ -9,4 +9,3 @@ as arguments, and store the tasks in a JSON file. The user should be able to:
 - List all tasks that are done
 - List all tasks that are not done
 - List all tasks that are in progress
-
