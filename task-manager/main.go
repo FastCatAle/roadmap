@@ -81,5 +81,14 @@ func addTask(newTask Task) {
 
 func main() {
     task := make(Task)
-	addTask(task)
+    fileData, err := os.ReadFile("data/test.json")
+    if err != nil {
+        fmt.Printf("Failed to read JSON file: %s\n", err)
+    }
+    taskData := []byte(fileData)
+    if err := json.Unmarshal(taskData, &task); err != nil {
+        fmt.Printf("Failed to Unmarshall JSON data: %s\n", err)
+    }
+    fmt.Println(task)
+    addTask(task)
 }
