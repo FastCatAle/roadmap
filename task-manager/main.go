@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -57,11 +58,11 @@ func (t *TaskContent) updateTask() {
     TODO: When I add a new task I should load previous tasks first and append 
     the new one in order from oldest to newest.
 */
-func addTask(newTask Task) {
+func addTask(newTask Task, desc *string) {
     currentTime := time.Now().Format(time.ANSIC)
 	var newId TaskId = TaskId(rand.Intn(100))
 	newTask[newId] = TaskContent{
-		Description: "Test text for my json.",
+		Description: *desc,
 		Status:      checkTaskStatus(IN_PROGRESS),
 		CreatedAt:   currentTime,
 		UpdatedAt:   currentTime,
@@ -89,6 +90,20 @@ func main() {
     if err := json.Unmarshal(taskData, &task); err != nil {
         fmt.Printf("Failed to Unmarshall JSON data: %s\n", err)
     }
-    fmt.Println(task)
-    addTask(task)
+
+    flagAddTask := flag.String("add", "test", "Add a new task")
+    //flagDeleteTask := flag.Int("delete", 0, "Delete an existing task by ID")
+    //flagUpdateTask := flag.Int("update", 0, "Update an existing task by ID")
+    flag.Parse()
+    initialFlag := flag.Arg(1)
+
+    switch initialFlag {
+    case *flagAddTask:
+        fmt.Printf("Flag %s content %s\n", initialFlag, *flagAddTask)
+        addTask(task, flagAddTask)
+    default:
+        fmt.Printf("Flag '%s' not found\n", initialFlag)
+        println("Type '-help' to see all commands")
+        os.Exit(0)
+    }
 }
