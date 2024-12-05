@@ -2,16 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
+	//"flag"
 	"fmt"
 	"math/rand"
 	"os"
 	"time"
 )
 
-type TaskId int
 type TaskStatus int
-type Task map[TaskId]TaskContent
+var Task map[int]TaskContent
 
 const (
 	DONE TaskStatus = iota
@@ -67,9 +66,9 @@ func (t *TaskContent) updateTask() {
     TODO: When I add a new task I should load previous tasks first and append 
     the new one in order from oldest to newest.
 */
-func addTask(newTask Task, description *string) {
+func addTask(newTask map[int]TaskContent, description *string) {
     currentTime := time.Now().Format(time.ANSIC)
-	var newId TaskId = TaskId(rand.Intn(100))
+	var newId int = rand.Intn(100)
 	newTask[newId] = TaskContent{
 		Description: *description,
 		Status:      addTaskStatus(IN_PROGRESS),
@@ -90,7 +89,8 @@ func addTask(newTask Task, description *string) {
 }
 
 func main() {
-    task := make(Task)
+    var Task map[int]TaskContent
+    //task := make(Task)
     fmt.Println("Reading 'test.json' file...")
     fileData, err := os.ReadFile("data/test.json")
     if err != nil {
@@ -98,14 +98,14 @@ func main() {
     }
     fmt.Println("Unmarshalling 'test.json' file...")
     taskData := []byte(fileData)
-    if err := json.Unmarshal(taskData, &task); err != nil {
+    if err := json.Unmarshal(taskData, &Task); err != nil {
         fmt.Printf("Failed to Unmarshall JSON data: %s\n", err)
     }
 
-    newTask := flag.String("add", "test", "Add a new task")
+    /*newTask := flag.String("add", "test", "Add a new task")
     //flagDeleteTask := flag.Int("delete", 0, "Delete an existing task by ID")
     //flagUpdateTask := flag.Int("update", 0, "Update an existing task by ID")
-    flag.Parse()
+    //flag.Parse()
 
     if *newTask != "" {
         fmt.Printf("Flag content %s\n", *newTask)
@@ -113,5 +113,5 @@ func main() {
     } else {
         println("Type '-help' to see all commands")
         os.Exit(0)
-    }
+    }*/
 }
