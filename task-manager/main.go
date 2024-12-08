@@ -2,15 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	//"flag"
+	"flag"
 	"fmt"
-	"math/rand"
+	//"math/rand"
 	"os"
 	"time"
 )
 
 type TaskStatus int
-var Task map[int]TaskContent
+var Task = make(map[int]TaskContent)
 
 const (
 	DONE TaskStatus = iota
@@ -39,16 +39,32 @@ func addTaskStatus(ts TaskStatus) string {
     return status
 }
 
-/*func getTaskId(t Task) {
-    for k, v := range Task {
-        if Task[k] {
-            //
+func getTaskId(task map[int]TaskContent) int{
+    var id int = 1
+    for k := range task {
+        if k == id {
+            id++
         }
     }
-}*/
+    return id
+}
 
-func (t *TaskContent) deleteTask() {
+func deleteTask(task map[int]TaskContent, id int) {
 	/*
+
+    delete(task, id)
+    byteValue, err := json.Marshal(newTask)
+	if err != nil {
+		fmt.Printf("Failed to marshal JSON: %s\n", err)
+		return
+	}
+
+	err = os.WriteFile("data/test.json", byteValue, 0644)
+	if err != nil {
+		fmt.Printf("Failed to write JSON file: %s\n", err)
+	}
+
+
 	   TODO: logic to delete an existing task by ID. Check if the task exist
        first before deleting, and if it doesn't I should tell the user.
 	*/
@@ -68,7 +84,7 @@ func (t *TaskContent) updateTask() {
 */
 func addTask(newTask map[int]TaskContent, description *string) {
     currentTime := time.Now().Format(time.ANSIC)
-	var newId int = rand.Intn(100)
+    newId := getTaskId(newTask)
 	newTask[newId] = TaskContent{
 		Description: *description,
 		Status:      addTaskStatus(IN_PROGRESS),
@@ -89,7 +105,7 @@ func addTask(newTask map[int]TaskContent, description *string) {
 }
 
 func main() {
-    var Task map[int]TaskContent
+    //var Task map[int]TaskContent
     //task := make(Task)
     fmt.Println("Reading 'test.json' file...")
     fileData, err := os.ReadFile("data/test.json")
@@ -102,12 +118,13 @@ func main() {
         fmt.Printf("Failed to Unmarshall JSON data: %s\n", err)
     }
 
-    /*newTask := flag.String("add", "test", "Add a new task")
+    newTask := flag.String("add", "test", "Add a new task")
     //flagDeleteTask := flag.Int("delete", 0, "Delete an existing task by ID")
     //flagUpdateTask := flag.Int("update", 0, "Update an existing task by ID")
-    //flag.Parse()
+    flag.Parse()
+    addTask(Task, newTask)
 
-    if *newTask != "" {
+    /*if *newTask != "" {
         fmt.Printf("Flag content %s\n", *newTask)
         addTask(task, newTask)
     } else {
