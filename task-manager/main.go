@@ -50,10 +50,40 @@ func getTaskId(task map[int]TaskContent) int{
 }
 
 func deleteTask(task map[int]TaskContent, id int) {
-	/*
-
     delete(task, id)
-    byteValue, err := json.Marshal(newTask)
+    byteValue, err := json.Marshal(task)
+	if err != nil {
+		fmt.Printf("Failed to marshal JSON: %s\n", err)
+		return
+	}
+
+	err = os.WriteFile("data/test.json", byteValue, 0644)
+	if err != nil {
+		fmt.Printf("Failed to write JSON file: %s\n", err)
+	}
+    /*
+	   TODO: logic to delete an existing task by ID. Check if the task exist
+       first before deleting, and if it doesn't I should tell the user.
+	*/
+}
+
+func updateTask(task map[int]TaskContent, id int, ts TaskStatus) {
+    switch ts {
+    case DONE:
+        task[id] = TaskContent{
+		    Status:      addTaskStatus(DONE),
+	    }
+    case IN_PROGRESS:
+        task[id] = TaskContent{
+		    Status:      addTaskStatus(IN_PROGRESS),
+	    }
+    case PENDING:
+        task[id] = TaskContent{
+		    Status:      addTaskStatus(PENDING),
+	    }
+    }
+
+	byteValue, err := json.Marshal(task)
 	if err != nil {
 		fmt.Printf("Failed to marshal JSON: %s\n", err)
 		return
@@ -64,24 +94,14 @@ func deleteTask(task map[int]TaskContent, id int) {
 		fmt.Printf("Failed to write JSON file: %s\n", err)
 	}
 
-
-	   TODO: logic to delete an existing task by ID. Check if the task exist
-       first before deleting, and if it doesn't I should tell the user.
-	*/
-}
-
-func (t *TaskContent) updateTask() {
-	/*
+    /*
 	   TODO: logic to update the status of a task and change the 
        'UpdatedAt' time. It should Unmarshall and check the exist tasks 
        in the JSON file first.
        If the task doesn't exist I should inform the user.
 	*/
 }
-/*
-    TODO: When I add a new task I should load previous tasks first and append 
-    the new one in order from oldest to newest.
-*/
+
 func addTask(newTask map[int]TaskContent, description *string) {
     currentTime := time.Now().Format(time.ANSIC)
     newId := getTaskId(newTask)
