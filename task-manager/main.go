@@ -73,17 +73,17 @@ func updateTask(task map[int]TaskContent, id int, ts TaskStatus) {
     case DONE:
         task[id] = TaskContent{
 		    Status:      addTaskStatus(DONE),
-            UpdatedAt: currentTime,
+            UpdatedAt:   currentTime,
 	    }
     case IN_PROGRESS:
         task[id] = TaskContent{
 		    Status:      addTaskStatus(IN_PROGRESS),
-            UpdatedAt: currentTime,
+            UpdatedAt:   currentTime,
 	    }
     case PENDING:
         task[id] = TaskContent{
 		    Status:      addTaskStatus(PENDING),
-            UpdatedAt: currentTime,
+            UpdatedAt:   currentTime,
 	    }
     }
 
@@ -158,11 +158,20 @@ func main() {
     */
     readAndUnmarshall()
     newTask := flag.String("add", "test", "Add a new task")
-    //deletedTask := flag.Int("delete", 0, "Delete an existing task by ID")
-    //updatedTask := flag.Int("update", 0, "Update an existing task by ID")
+    deletedTask := flag.Int("delete", 0, "Delete an existing task by ID")
+    updatedTask := flag.Int("update", 0, "Update an existing task by ID")
     flag.Parse()
-    addTask(Task, newTask)
 
+    if *newTask != "" {
+        addTask(Task, newTask)
+    } else if updatedTask != nil {
+        updateTask(Task, *updatedTask, 0)
+    } else if deletedTask != nil {
+        deleteTask(Task, *deletedTask)
+    } else {
+        os.Exit(0)
+    }
+    
     /*if *newTask != "" {
         fmt.Printf("Flag content %s\n", *newTask)
         addTask(task, newTask)
