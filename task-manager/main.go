@@ -68,18 +68,22 @@ func deleteTask(task map[int]TaskContent, id int) {
 }
 
 func updateTask(task map[int]TaskContent, id int, ts TaskStatus) {
+    currentTime := time.Now().Format(time.ANSIC)
     switch ts {
     case DONE:
         task[id] = TaskContent{
 		    Status:      addTaskStatus(DONE),
+            UpdatedAt: currentTime,
 	    }
     case IN_PROGRESS:
         task[id] = TaskContent{
 		    Status:      addTaskStatus(IN_PROGRESS),
+            UpdatedAt: currentTime,
 	    }
     case PENDING:
         task[id] = TaskContent{
 		    Status:      addTaskStatus(PENDING),
+            UpdatedAt: currentTime,
 	    }
     }
 
@@ -124,9 +128,7 @@ func addTask(newTask map[int]TaskContent, description *string) {
 	}
 }
 
-func main() {
-    //var Task map[int]TaskContent
-    //task := make(Task)
+func readAndUnmarshall() {
     fmt.Println("Reading 'test.json' file...")
     fileData, err := os.ReadFile("data/test.json")
     if err != nil {
@@ -137,10 +139,27 @@ func main() {
     if err := json.Unmarshal(taskData, &Task); err != nil {
         fmt.Printf("Failed to Unmarshall JSON data: %s\n", err)
     }
+}
 
+func main() {
+    //var Task map[int]TaskContent
+    //task := make(Task)
+    /*
+    fmt.Println("Reading 'test.json' file...")
+    fileData, err := os.ReadFile("data/test.json")
+    if err != nil {
+        fmt.Printf("Failed to read JSON file: %s\n", err)
+    }
+    fmt.Println("Unmarshalling 'test.json' file...")
+    taskData := []byte(fileData)
+    if err := json.Unmarshal(taskData, &Task); err != nil {
+        fmt.Printf("Failed to Unmarshall JSON data: %s\n", err)
+    }
+    */
+    readAndUnmarshall()
     newTask := flag.String("add", "test", "Add a new task")
-    //flagDeleteTask := flag.Int("delete", 0, "Delete an existing task by ID")
-    //flagUpdateTask := flag.Int("update", 0, "Update an existing task by ID")
+    //deletedTask := flag.Int("delete", 0, "Delete an existing task by ID")
+    //updatedTask := flag.Int("update", 0, "Update an existing task by ID")
     flag.Parse()
     addTask(Task, newTask)
 
